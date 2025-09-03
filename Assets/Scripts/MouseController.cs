@@ -24,7 +24,7 @@ public class MouseController : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             EndPos = new Vector2(transform.position.x, transform.position.y);
-            Centerpos=StartPos-EndPos
+            //Centerpos=StartPos-EndPos
             CC();
         }
     }
