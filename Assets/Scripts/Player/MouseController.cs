@@ -36,13 +36,13 @@ public class MouseController : MonoBehaviour
             EndPos = Input.mousePosition;
             Debug.Log("EndPos" + Camera.main.ScreenToWorldPoint(EndPos));
             RayFind();
-            CC();
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         MC = collision.GetComponent<MeshCut2D.CutController>();
+        Debug.Log(UnityEditor.ObjectNames.GetClassName(collision));
     }
 
     // Rayを用いてobjectを探す
@@ -53,9 +53,9 @@ public class MouseController : MonoBehaviour
         var midRay = _targetCamera.ScreenPointToRay(midScreenPosition);
 
         //  レイを書く
-        Debug.DrawRay(midRay.origin, midRay.direction * 1000f, Color.red, 2f);
+        Debug.DrawRay(midRay.origin, midRay.direction * 100f, Color.red, 2f);
         // BoxCastの中心をRayのちょっと前方にする（5単位前）
-        var boxCenter = midRay.origin + midRay.direction * 500f;
+        var boxCenter = midRay.origin + midRay.direction * 10f;
         // スクリーン座標をワールド座標に変換して方向を出す
         var startWorld = _targetCamera.ScreenToWorldPoint(new Vector2(StartPos.x, StartPos.y));
         var endWorld = _targetCamera.ScreenToWorldPoint(new Vector2(EndPos.x, EndPos.y));
@@ -75,14 +75,31 @@ public class MouseController : MonoBehaviour
         Debug.Log("ボックスを投射する方向　" + forward);
         Debug.Log("結果の保存　" + _hits);
         Debug.Log("ボックスの回転　" + boxRotation);
+
+        // CutControllerにデータを渡す
+        for (int i = 0; i < hitCount; i++)
+        {
+            MC = _hits[i].transform.GetComponent<MeshCut2D.CutController>();
+            if (MC != null)
+            {
+                CC(hitCount);
+            }
+            Debug.Log($"カット対象: {_hits[i].transform.name}, Normal={sliceNormal}");
+        }
+
+        if (hitCount == 0)
+        {
+            Debug.Log("BoxCastでヒットなし。");
+        }
     }
 
-    void CC()
+    void CC(int Count)
     {
-        MC.Startx = StartPos.x;
-        MC.Starty = StartPos.y;
-        MC.Endx = EndPos.x;
-        MC.Endy = EndPos.y;
+        MC.index = Count;
+        MC.Startx = _targetCamera.ScreenToWorldPoint(StartPos).x;
+        MC.Starty = _targetCamera.ScreenToWorldPoint(StartPos).y;
+        MC.Endx = _targetCamera.ScreenToWorldPoint(EndPos).x;
+        MC.Endy = _targetCamera.ScreenToWorldPoint(EndPos).y;
     }
 }
 
