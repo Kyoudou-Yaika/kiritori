@@ -9,32 +9,25 @@ namespace MeshCut2D
         IList<Color32> Colors;      // 色
         IList<Vector2> UV;          // UV
         IList<int> Indices;         // インデックス
-        int index;                  // インデックス数
+        public int index;                  // インデックス数
         public float Startx, Starty, Endx, Endy; // LinePoint1
         MeshCutResult ResultsA, ResultsB;    // 結果Aと結果B
-        GameObject GOA, GOB;
        
         // Start is called before the first frame update
         void Start()
         {
+            Mesh mesh = GetComponent<MeshFilter>().mesh;
+            Vertices = mesh.vertices;
+            UV = GetComponent<SpriteRenderer>().sprite.vertices;
 
+            ResultsA = new MeshCutResult();
+            ResultsB = new MeshCutResult();
         }
 
         // Update is called once per frame
         void Update()
         {
-            Mesh mesh = GetComponent<MeshFilter>().mesh;
-            Vertices = mesh.vertices;
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                MeshCut2D.Cut(Vertices, Colors, UV, Indices, index, Startx, Starty, Endx, Endy, ResultsA, ResultsB);
-            }
+            MeshCut2D.Cut(Vertices, Colors, UV, Indices, index, Startx, Starty, Endx, Endy, ResultsA, ResultsB);           
         }
     }
 
@@ -122,7 +115,7 @@ namespace MeshCut2D
             IList<Vector3> vertices,    // 頂点
             IList<Color32> colors,      // 色
             IList<Vector2> uv,          // UV
-            IList<int> indices,         // インデックス
+            IList<int> indices,         // インデックス()
             int indexCount,             // インデックス数
             float x1, // LinePoint1
             float y1, // LinePoint1
@@ -156,6 +149,8 @@ namespace MeshCut2D
                 bool cSide = IsClockWise(x1, y1, x2, y2, c.x, c.y);
                 if (aSide == bSide && aSide == cSide)
                 {
+                    // 三項演算子を使用
+                    // 「?」:trueの時「:」:falseの時
                     var triangleResult = aSide ? _resultsA : _resultsB;
                     triangleResult.AddTriangle(
                         a.x, a.y, b.x, b.y, c.x, c.y,
