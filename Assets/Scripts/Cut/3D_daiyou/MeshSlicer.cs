@@ -70,12 +70,13 @@ public class MeshSlicer : MonoBehaviour
         // 下面（逆順）
         FillCutFace(cutEdges, plane.normal, capVertsBottom, capTrisBottom, capUVsBottom);
         var baseMaterial = meshRenderer.sharedMaterial;
+        // Objectの名前
         var upperObject =
             CreateMesh("UpperHull", upperVerts, upperTris, upperUVs, capVertsTop, capTrisTop, capUVsTop, baseMaterial, slicedMaterial);
 
         var lowerObject =
             CreateMesh("LowerHull", lowerVerts, lowerTris, lowerUVs, capVertsBottom, capTrisBottom, capUVsBottom, baseMaterial, slicedMaterial);
-        Object.Destroy(targetObject.gameObject);
+        Object.Destroy(targetObject.gameObject);        
         return (upperObject, lowerObject);
     }
     static void SliceTriangleStable(Plane plane, Vector3[] v, Vector2[] uv, bool[] side,
@@ -171,6 +172,8 @@ public class MeshSlicer : MonoBehaviour
         uvs.AddRange(new[] { a.Item2, b.Item2, c.Item2 });
         tris.AddRange(new[] { idx, idx + 1, idx + 2 });
     }
+
+    // Object生成に関わる関数
     private static GameObject CreateMesh(string name,
         List<Vector3> verts, List<int> tris, List<Vector2> uvs,
         List<Vector3> capVerts, List<int> capTris, List<Vector2> capUVs,
@@ -181,7 +184,9 @@ public class MeshSlicer : MonoBehaviour
             Debug.LogWarning($"[{name}] Mesh skipped: no vertices.");
             return null;
         }
-        var obj = new GameObject(name, typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider), typeof(Rigidbody));
+        // ここで生成したObjectにcomponentを入れる。
+        var obj = new GameObject(name, typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider),
+            typeof(Rigidbody), typeof(MeshSlicer), typeof(AfterNewObject));
         var mesh = new Mesh();
         var allVerts = verts.Concat(capVerts).ToList();
         var allUVs = uvs.Concat(capUVs).ToList();
