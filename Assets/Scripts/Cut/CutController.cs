@@ -5,20 +5,23 @@ namespace MeshCut2D
 {
     public class CutController : MonoBehaviour
     {
-        IList<Vector3> Vertices;    // 頂点
-        IList<Color32> Colors;      // 色
-        IList<Vector2> UV;          // UV
-        IList<int> Indices;         // インデックス
-        public int index;                  // インデックス数
-        public float Startx, Starty, Endx, Endy; // LinePoint1
-        MeshCutResult ResultsA, ResultsB;    // 結果Aと結果B
+        [SerializeField]
+        private Sprite sprite;
+        IList<Vector3> Vertices;                  // 頂点           (階級投影)
+        IList<Color32> Colors;                    // 色             ()
+        IList<Vector2> UV;                        // UV             ()
+        IList<int> Indices;                       // インデックス   ()
+        public int index;                         // インデックス数 ()
+        public float Startx, Starty, Endx, Endy;  // LinePoint1     (スタートとエンドポイント)
+        MeshCutResult ResultsA, ResultsB;         // 結果Aと結果B   ()
        
         // Start is called before the first frame update
         void Start()
         {
             Mesh mesh = GetComponent<MeshFilter>().mesh;
             Vertices = mesh.vertices;
-            UV = GetComponent<SpriteRenderer>().sprite.vertices;
+            // Vertices = GetComponent<SpriteRenderer>().sprite.vertices;
+            UV = sprite.uv;
 
             ResultsA = new MeshCutResult();
             ResultsB = new MeshCutResult();
@@ -27,7 +30,11 @@ namespace MeshCut2D
         // Update is called once per frame
         void Update()
         {
-            MeshCut2D.Cut(Vertices, Colors, UV, Indices, index, Startx, Starty, Endx, Endy, ResultsA, ResultsB);           
+            MeshCut2D.Cut(Vertices, Colors, UV, Indices, index, Startx, Starty, Endx, Endy, ResultsA, ResultsB);
+            if (ResultsA != null && ResultsB != null)
+            {
+                Debug.Log("not null");
+            }
         }
     }
 
@@ -117,10 +124,10 @@ namespace MeshCut2D
             IList<Vector2> uv,          // UV
             IList<int> indices,         // インデックス()
             int indexCount,             // インデックス数
-            float x1, // LinePoint1
-            float y1, // LinePoint1
-            float x2, // LinePoint2
-            float y2, // LinePoint2
+            float x1,                   // LinePoint1
+            float y1,                   // LinePoint1
+            float x2,                   // LinePoint2
+            float y2,                   // LinePoint2
             MeshCutResult _resultsA,    // 結果A
             MeshCutResult _resultsB)    // 結果B
         {
@@ -309,7 +316,7 @@ namespace MeshCut2D
             uvY = uv3_Y + (uv4_Y - uv3_Y) * c;
         }
 
-        // 時計回り
+        // 時計回りのときtrueを返す
         private static bool IsClockWise(
             float x1, float y1,
             float x2, float y2,

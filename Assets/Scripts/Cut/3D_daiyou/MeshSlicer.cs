@@ -75,7 +75,7 @@ public class MeshSlicer : MonoBehaviour
 
         var lowerObject =
             CreateMesh("LowerHull", lowerVerts, lowerTris, lowerUVs, capVertsBottom, capTrisBottom, capUVsBottom, baseMaterial, slicedMaterial);
-        Object.Destroy(targetObject.gameObject);
+        Destroy(targetObject.gameObject);
         return (upperObject, lowerObject);
     }
     static void SliceTriangleStable(Plane plane, Vector3[] v, Vector2[] uv, bool[] side,
@@ -181,7 +181,10 @@ public class MeshSlicer : MonoBehaviour
             Debug.LogWarning($"[{name}] Mesh skipped: no vertices.");
             return null;
         }
-        var obj = new GameObject(name, typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider), typeof(Rigidbody));
+
+        // ê∂ê¨ï®ÇÃcomponentéwíË
+        var obj = new GameObject(name, typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider),
+            typeof(Rigidbody), typeof(MeshSlicer), typeof(AfterNewObject));
         var mesh = new Mesh();
         var allVerts = verts.Concat(capVerts).ToList();
         var allUVs = uvs.Concat(capUVs).ToList();
