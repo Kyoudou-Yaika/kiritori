@@ -15,11 +15,8 @@ public class TapPositionGetter : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
     private bool _isDragging = false;
-    private RaycastHit[] _hits = new RaycastHit[10];
-    // 操作用
     public bool touch;
-    RaycastHit hit;
-    Vector3 touchObject;
+    private RaycastHit[] _hits = new RaycastHit[10];
 
     private void Start()
     {
@@ -39,18 +36,10 @@ public class TapPositionGetter : MonoBehaviour
             _startPosition = Input.mousePosition;
             _isDragging = true;
             _lineRenderer.enabled = true;
-            // 当たり判定による条件式
-            // Rayを飛ばして当たり判定をチェック
-            Ray ray = Camera.main.ScreenPointToRay(_startPosition);    // カメラからマウスカーソルの位置のRayを作成
-            if (Physics.Raycast(ray, out hit))
-            {
-                touch = true;   // フラグ
-                _lineRenderer.enabled = false;
-            }
+            touch = true;
         }
-
         // ドラッグ中：線の更新
-        if (_isDragging && !touch)
+        if (_isDragging)
         {
             _endPosition = Input.mousePosition;
             var startWorld = GetWorldPosition(_startPosition);
@@ -60,22 +49,11 @@ public class TapPositionGetter : MonoBehaviour
             _lineRenderer.SetPosition(0, startWorld);
             _lineRenderer.SetPosition(1, endWorld);
         }
-        else if (_isDragging && touch)
-        {
-            touchObject = GetWorldPosition(Input.mousePosition);
-            touchObject.z = 0f;
-            hit.collider.gameObject.transform.position = touchObject;
-        }
-
         if (Input.GetMouseButtonUp(0) && _isDragging)
         {
             _isDragging = false;
             _lineRenderer.enabled = false;
-            if (touch)
-            {
-                touch = false;
-                return;
-            }
+            touch = false;
 
             // 切り取り線の開始と終わり
             var midScreenPosition = (_startPosition + _endPosition) / 2f;
@@ -121,11 +99,6 @@ public class TapPositionGetter : MonoBehaviour
             }
 
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        
     }
 
     private Vector3 GetWorldPosition(Vector3 screenPosition)

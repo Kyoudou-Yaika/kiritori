@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MeshCut2D;
 
 public class MouseController : MonoBehaviour
 {
     [SerializeField]
     private Camera _targetCamera;
 
-    CutController MC;
+    MeshCut2D.CutController MC;
     Vector2 StartPos, EndPos, Centerpos;
     public int distance = 15;          // Rayの飛ばせる距離
 
@@ -42,13 +41,13 @@ public class MouseController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        MC = collision.GetComponent<CutController>();
+        MC = collision.GetComponent<MeshCut2D.CutController>();
         Debug.Log(UnityEditor.ObjectNames.GetClassName(collision));
     }
 
     // Rayを用いてobjectを探す
     void RayFind()
-    {
+    { 
         // 切り取り線の開始と終わり
         var midScreenPosition = (StartPos + EndPos) / 2f;
         var midRay = _targetCamera.ScreenPointToRay(midScreenPosition);
@@ -69,7 +68,7 @@ public class MouseController : MonoBehaviour
 
         // Boxのサイズを調整（厚みや幅は好みで）
         Vector2 boxHalfExtents = new Vector2(Vector2.Distance(startWorld, endWorld) / 2f, 0.05f);// 2f, 0.05f, 1f
-        // BoxCast実行        
+        // BoxCast実行
         var hitCount = Physics2D.BoxCastNonAlloc(boxCenter, boxHalfExtents, BoxAngle , forward, _hits, distance);
         Debug.Log("ボックスの中心　" + boxCenter);// 57
         Debug.Log("各軸についてのボックスサイズの半分　" + boxHalfExtents);
@@ -80,7 +79,7 @@ public class MouseController : MonoBehaviour
         // CutControllerにデータを渡す
         for (int i = 0; i < hitCount; i++)
         {
-            MC = _hits[i].transform.GetComponent<CutController>();
+            MC = _hits[i].transform.GetComponent<MeshCut2D.CutController>();
             if (MC != null)
             {
                 CC(hitCount);

@@ -1,29 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 参考元https://qiita.com/fujii-kotaro/items/8b24eff19c20f125bec3
 namespace MeshCut2D
 {
     public class CutController : MonoBehaviour
     {
-        IList<Vector3> Vertices = null;                    // 頂点          (階級投影・３Dポイントを２D空間に投影する関数)
-        IList<Color32> Colors = null;                      // 色 　         (32 ビット形式での RGBA の色の表現)
-        IList<Vector2> UV = null;                          // UV 　         (物理演算に使用。スプライトのアウトラインの定義)
-        IList<int> Indices = null;                         // インデックス  (基本は配列と同じ)
-        public int index = 0;                              // インデックス数
-        public float Startx, Starty, Endx, Endy;           // LinePoint1    (ラインのスタートとエンドポイント)
-        MeshCutResult ResultsA = null, ResultsB = null;    // 結果Aと結果B
+        IList<Vector3> Vertices;    // 頂点
+        IList<Color32> Colors;      // 色
+        IList<Vector2> UV;          // UV
+        IList<int> Indices;         // インデックス
+        public int index;                  // インデックス数
+        public float Startx, Starty, Endx, Endy; // LinePoint1
+        MeshCutResult ResultsA, ResultsB;    // 結果Aと結果B
        
         // Start is called before the first frame update
         void Start()
         {
             Mesh mesh = GetComponent<MeshFilter>().mesh;
             Vertices = mesh.vertices;
+            UV = GetComponent<SpriteRenderer>().sprite.vertices;
 
             ResultsA = new MeshCutResult();
             ResultsB = new MeshCutResult();
-            if (Vertices != null)
-                Debug.Log("mesh");
         }
 
         // Update is called once per frame
@@ -117,12 +115,12 @@ namespace MeshCut2D
             IList<Vector3> vertices,    // 頂点
             IList<Color32> colors,      // 色
             IList<Vector2> uv,          // UV
-            IList<int> indices,         // インデックス
+            IList<int> indices,         // インデックス()
             int indexCount,             // インデックス数
-            float x1,                   // LinePoint1(スタートポジションのx軸)
-            float y1,                   // LinePoint1(スタートポジションのy軸)
-            float x2,                   // LinePoint2(エンドポジションのx軸)
-            float y2,                   // LinePoint2(エンドポジションのy軸)
+            float x1, // LinePoint1
+            float y1, // LinePoint1
+            float x2, // LinePoint2
+            float y2, // LinePoint2
             MeshCutResult _resultsA,    // 結果A
             MeshCutResult _resultsB)    // 結果B
         {
@@ -288,7 +286,7 @@ namespace MeshCut2D
             }
         }
 
-        // 交差点とラインストリップを取得する (2直線の交点を面積比で求める)
+        // 交差点とラインストリップを取得する
         private static void GetIntersectionLineAndLineStrip(
             float x1, float y1, // Line Point
             float x2, float y2, // Line Point
@@ -311,7 +309,7 @@ namespace MeshCut2D
             uvY = uv3_Y + (uv4_Y - uv3_Y) * c;
         }
 
-        // 時計回りならtrueを返す
+        // 時計回り
         private static bool IsClockWise(
             float x1, float y1,
             float x2, float y2,
