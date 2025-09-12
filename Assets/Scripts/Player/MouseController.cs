@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Œã‰ñ‚µ
 public class MouseController : MonoBehaviour
 {
     [SerializeField]

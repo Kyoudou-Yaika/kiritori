@@ -15,7 +15,7 @@ public class TapPositionGetter : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
     private bool _isDragging = false;
-    private RaycastHit[] _hits = new RaycastHit[10];
+    private RaycastHit[] _hits = new RaycastHit[1];     // •Û‘¶‚·‚éObject‚Ì”(¡‚Í1‚Â‚Ì‚İ‘¼‚ÌŠÖŒW‚È‚¢‚à‚Ì‚àØ‚Á‚Ä‚µ‚Ü‚¤‚½‚ß)
 
     public bool touch;
     Vector3 htp;

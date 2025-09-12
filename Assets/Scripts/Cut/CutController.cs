@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Œã‰ñ‚µ
 namespace MeshCut2D
 {
     public class CutController : MonoBehaviour
