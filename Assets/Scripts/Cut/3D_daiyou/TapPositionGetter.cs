@@ -15,8 +15,12 @@ public class TapPositionGetter : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
     private bool _isDragging = false;
+    private RaycastHit[] _hits = new RaycastHit[1];     // 保存するObjectの数(今は1つのみ他の関係ないものも切ってしまうため)
+
     public bool touch;
-    private RaycastHit[] _hits = new RaycastHit[10];
+    Vector3 htp;
+    RaycastHit hit;
+
 
     private void Start()
     {
@@ -36,9 +40,16 @@ public class TapPositionGetter : MonoBehaviour
             _startPosition = Input.mousePosition;
             _isDragging = true;
             _lineRenderer.enabled = true;
+            Ray ray = _targetCamera.ScreenPointToRay(Input.mousePosition);    // カメラからマウスカーソルの位置のRayを作成
+            // Rayを飛ばして当たり判定をチェック
+            if (Physics.Raycast(ray, out hit))
+            {
+                touch = true;
+                _lineRenderer.enabled = false;
+            }
         }
         // ドラッグ中：線の更新
-        if (_isDragging)
+        if (_isDragging && !touch)
         {
             _endPosition = Input.mousePosition;
             var startWorld = GetWorldPosition(_startPosition);
@@ -48,10 +59,17 @@ public class TapPositionGetter : MonoBehaviour
             _lineRenderer.SetPosition(0, startWorld);
             _lineRenderer.SetPosition(1, endWorld);
         }
+        else if (_isDragging && touch)
+        {
+            htp = GetWorldPosition(Input.mousePosition);
+            htp.z = 0f;
+            hit.transform.position = htp;
+        }
         if (Input.GetMouseButtonUp(0) && _isDragging)
         {
             _isDragging = false;
             _lineRenderer.enabled = false;
+            touch = false;
 
             // 切り取り線の開始と終わり
             var midScreenPosition = (_startPosition + _endPosition) / 2f;
