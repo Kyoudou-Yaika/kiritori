@@ -185,6 +185,7 @@ public class MeshSlicer : MonoBehaviour
         // ê∂ê¨ï®ÇÃcomponentéwíË
         var obj = new GameObject(name, typeof(MeshRenderer), typeof(MeshFilter), typeof(MeshCollider),
             typeof(Rigidbody), typeof(MeshSlicer), typeof(AfterNewObject));
+        obj.GetComponent<Rigidbody>().isKinematic = true;
         var mesh = new Mesh();
         var allVerts = verts.Concat(capVerts).ToList();
         var allUVs = uvs.Concat(capUVs).ToList();
@@ -192,6 +193,7 @@ public class MeshSlicer : MonoBehaviour
         var filtered = allVerts.Zip(allUVs, (v, uv) => new { v, uv })
             .Where(p => !(float.IsNaN(p.v.x) || float.IsNaN(p.v.y) || float.IsNaN(p.v.z)))
             .ToList();
+        // 0918ÅFéÂÇ…UpObjectÇ…ëŒÇµÇƒî≠ê∂
         if (filtered.Count != allVerts.Count)
         {
             Debug.LogWarning($"[{name}] Some vertices contained NaN and were removed.");
